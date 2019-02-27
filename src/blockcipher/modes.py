@@ -1,6 +1,7 @@
 class ElectronicCodeBook():
     @staticmethod
     def encrypt(filedir, key, output_filename):
+        
         pass
     
     @staticmethod
