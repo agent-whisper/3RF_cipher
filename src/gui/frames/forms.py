@@ -1,9 +1,11 @@
+import os
 import tkinter as tk
 import tkinter.filedialog as tkfd
 
 from src.blockcipher.modes import ElectronicCodeBook, CipherFeedback, \
     CipherBlockChaining, OutputFeedback, CounterMode
 import src.utilities.hash as hs
+import src.utilities.file as fl
 
 class Form(tk.Frame):
     def __init__(self, master):
@@ -15,6 +17,8 @@ class Form(tk.Frame):
             'Output Feedback' : 'ofb',
             'Counter Mode' : 'cm',
         }
+        self.ENCRYPT_OUTPUT = 'ENCRYPT_OUTPUT'
+        self.DECRYPT_OUTPUT = 'DECRYPT_OUTPUT'
 
 class EncryptionForm(Form):
     def __init__(self, master):
@@ -90,43 +94,59 @@ def create_input_frame(master, row, column=0, columnspan=1):
     
     if master.cipher_type == 'encrypt':
         execute_button = tk.Button(master, text='Mulai Enkripsi', \
-            command=lambda: encrypt(filedir.get(), key_entry.get(), output_filename_entry.get(), operation_mode.get()))
+            command=lambda: encrypt(filedir.get(), key_entry.get(), \
+                '{}/{}'.format(master.ENCRYPT_OUTPUT, output_filename_entry.get()), operation_mode.get()))
     else:
         execute_button = tk.Button(master, text='Mulai Dekripsi', \
-            command=lambda: decrypt(filedir.get(), key_entry.get(), output_filename_entry.get(), operation_mode.get()))
+            command=lambda: decrypt(filedir.get(), key_entry.get(), \
+                '{}/{}'.format(master.DECRYPT_OUTPUT, output_filename_entry.get()), operation_mode.get()))
     execute_button.grid(column=0, padx=30, pady=50, sticky=tk.W)
     
-def encrypt(filedir, key, output_filename, op_mode):
-    if check_form_complete(filedir, key, output_filename, op_mode):
+def encrypt(filedir, key, output_dir, op_mode):
+    if check_form_complete(filedir, key, output_dir, op_mode):
         print('=== Starting Encryption ===')
         hashed_key = hs.sha256(key)
-        print_user_input(filedir, key, hashed_key, output_filename, op_mode)
-        if op_mode == 'ecb':
-            ElectronicCodeBook.encrypt(filedir, hashed_key, output_filename)
-        elif op_mode == 'cbc':
-            CipherBlockChaining.encrypt(filedir, hashed_key, output_filename)
-        elif op_mode == 'cfb':
-            CipherFeedback.encrypt(filedir, hashed_key, output_filename)
-        elif op_mode == 'ofb':
-            OutputFeedback.encrypt(filedir, hashed_key, output_filename)
-        elif op_mode == 'cm':
-            CounterMode.encrypt(filedir, hashed_key, output_filename)
+        print_user_input(filedir, key, hashed_key, output_dir, op_mode)
 
-def decrypt(filedir, key, output_filename, op_mode):
-    if check_form_complete(filedir, key, output_filename, op_mode):
+        ciphertext = bytes('', 'utf-8')
+        if op_mode == 'ecb':
+            ciphertext = ElectronicCodeBook.encrypt(filedir, hashed_key, output_dir)
+        elif op_mode == 'cbc':
+            CipherBlockChaining.encrypt(filedir, hashed_key, output_dir)
+        elif op_mode == 'cfb':
+            CipherFeedback.encrypt(filedir, hashed_key, output_dir)
+        elif op_mode == 'ofb':
+            OutputFeedback.encrypt(filedir, hashed_key, output_dir)
+        elif op_mode == 'cm':
+            CounterMode.encrypt(filedir, hashed_key, output_dir)
+        
+        output_folder = output_dir.split('/')[:-1]
+        output_folder = '/'.join(output_folder)
+        create_folder(output_folder)
+        fl.write_byte(ciphertext, output_dir)
+
+def decrypt(filedir, key, output_dir, op_mode):
+    if check_form_complete(filedir, key, output_dir, op_mode):
         print('=== Starting Decrytion ===')
         hashed_key = hs.sha256(key)
-        print_user_input(filedir, key, hashed_key, output_filename, op_mode)
+        print_user_input(filedir, key, hashed_key, output_dir, op_mode)
+
+        ciphertext = bytes('', 'utf-8')
         if op_mode == 'ecb':
-            ElectronicCodeBook.decrypt(filedir, hashed_key, output_filename)
+            ciphertext = ElectronicCodeBook.decrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'cbc':
-            CipherBlockChaining.decrypt(filedir, hashed_key, output_filename)
+            CipherBlockChaining.decrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'cfb':
-            CipherFeedback.decrypt(filedir, hashed_key, output_filename)
+            CipherFeedback.decrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'ofb':
-            OutputFeedback.decrypt(filedir, hashed_key, output_filename)
+            OutputFeedback.decrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'cm':
-            CounterMode.decrypt(filedir, hashed_key, output_filename)
+            CounterMode.decrypt(filedir, hashed_key, output_dir)
+
+        output_folder = output_dir.split('/')[:-1]
+        output_folder = '/'.join(output_folder)
+        create_folder(output_folder)
+        fl.write_byte(ciphertext, output_dir)
 
 def print_user_input(filedir, key, hashed_key, output_filename, op_mode):
     print('File Directory: {}'.format(filedir))
@@ -141,3 +161,9 @@ def check_form_complete(filedir, key, output_filename, op_mode):
     if not is_valid:
         print('Ada field yang kosong; Periksa lagi')
     return is_valid
+
+def create_folder(dir):
+    try:
+        os.makedirs(dir)
+    except FileExistsError:
+        pass
