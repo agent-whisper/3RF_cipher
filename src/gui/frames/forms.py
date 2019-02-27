@@ -3,6 +3,7 @@ import tkinter.filedialog as tkfd
 
 from src.blockcipher.modes import ElectronicCodeBook, CipherFeedback, \
     CipherBlockChaining, OutputFeedback, CounterMode
+import src.utilities.hash as hs
 
 class Form(tk.Frame):
     def __init__(self, master):
@@ -98,36 +99,39 @@ def create_input_frame(master, row, column=0, columnspan=1):
 def encrypt(filedir, key, output_filename, op_mode):
     if check_form_complete(filedir, key, output_filename, op_mode):
         print('=== Starting Encryption ===')
-        print_user_input(filedir, key, output_filename, op_mode)
+        hashed_key = hs.sha256(key)
+        print_user_input(filedir, key, hashed_key, output_filename, op_mode)
         if op_mode == 'ecb':
-            ElectronicCodeBook.encrypt(filedir, key, output_filename)
+            ElectronicCodeBook.encrypt(filedir, hashed_key, output_filename)
         elif op_mode == 'cbc':
-            CipherBlockChaining.encrypt(filedir, key, output_filename)
+            CipherBlockChaining.encrypt(filedir, hashed_key, output_filename)
         elif op_mode == 'cfb':
-            CipherFeedback.encrypt(filedir, key, output_filename)
+            CipherFeedback.encrypt(filedir, hashed_key, output_filename)
         elif op_mode == 'ofb':
-            OutputFeedback.encrypt(filedir, key, output_filename)
+            OutputFeedback.encrypt(filedir, hashed_key, output_filename)
         elif op_mode == 'cm':
-            CounterMode.encrypt(filedir, key, output_filename)
+            CounterMode.encrypt(filedir, hashed_key, output_filename)
 
 def decrypt(filedir, key, output_filename, op_mode):
     if check_form_complete(filedir, key, output_filename, op_mode):
         print('=== Starting Decrytion ===')
-        print_user_input(filedir, key, output_filename, op_mode)
+        hashed_key = hs.sha256(key)
+        print_user_input(filedir, key, hashed_key, output_filename, op_mode)
         if op_mode == 'ecb':
-            ElectronicCodeBook.decrypt(filedir, key, output_filename)
+            ElectronicCodeBook.decrypt(filedir, hashed_key, output_filename)
         elif op_mode == 'cbc':
-            CipherBlockChaining.decrypt(filedir, key, output_filename)
+            CipherBlockChaining.decrypt(filedir, hashed_key, output_filename)
         elif op_mode == 'cfb':
-            CipherFeedback.decrypt(filedir, key, output_filename)
+            CipherFeedback.decrypt(filedir, hashed_key, output_filename)
         elif op_mode == 'ofb':
-            OutputFeedback.decrypt(filedir, key, output_filename)
+            OutputFeedback.decrypt(filedir, hashed_key, output_filename)
         elif op_mode == 'cm':
-            CounterMode.decrypt(filedir, key, output_filename)
+            CounterMode.decrypt(filedir, hashed_key, output_filename)
 
-def print_user_input(filedir, key, output_filename, op_mode):
+def print_user_input(filedir, key, hashed_key, output_filename, op_mode):
     print('File Directory: {}'.format(filedir))
     print('Key: {}'.format(key))
+    print('Hashed Key: {}'.format(hashed_key))
     print('Output Filename: {}'.format(output_filename))
     print('Operation Mode: {}'.format(op_mode))
 
