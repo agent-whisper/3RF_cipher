@@ -1,6 +1,6 @@
 from src.blockcipher.modules import pbox, sbox, transform
 
-class Feister():
+class Feistel():
     @staticmethod
     def encrypt(data_block, ext_key):
         pass
