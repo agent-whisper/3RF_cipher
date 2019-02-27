@@ -1,3 +1,7 @@
+# Cipher Output Folders
+DECRYPT_OUTPUT/
+ENCRYPT_OUTPUT/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
