@@ -14,7 +14,8 @@ def merge_bytes(byte_arr):
 
 def xor(byte_a, byte_b):
     xor_result = b''
-    for a, b in zip(byte_a, byte_b):
-        c = chr(a ^ b)
+    block_len = (len(byte_a) if len(byte_a) <= len(byte_b) else len(byte_b))
+    for i in range(0, block_len):
+        c = chr(byte_a[i] ^ byte_b[i])
         xor_result += bytes(c, 'utf-8')
     return xor_result
