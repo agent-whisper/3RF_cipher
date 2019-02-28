@@ -1,3 +1,6 @@
+# Ignore dummy / test files
+frz*
+
 # Cipher Output Folders
 DECRYPT_OUTPUT/
 ENCRYPT_OUTPUT/
