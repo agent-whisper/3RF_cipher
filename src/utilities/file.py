@@ -1,3 +1,5 @@
+import os
+
 def read_byte(filedir):
     file_bytes = bytes('', 'utf-8')
     try:
@@ -12,3 +14,9 @@ def read_byte(filedir):
 def write_byte(data, output_dir):
     with open(output_dir, 'wb+') as f:
         f.write(data)
+
+def create_folder(dir):
+    try:
+        os.makedirs(dir)
+    except FileExistsError:
+        pass
