@@ -112,17 +112,20 @@ def encrypt(filedir, key, output_dir, op_mode):
         if op_mode == 'ecb':
             ciphertext = ElectronicCodeBook.encrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'cbc':
-            CipherBlockChaining.encrypt(filedir, hashed_key, output_dir)
+            ciphertext = CipherBlockChaining.encrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'cfb':
-            CipherFeedback.encrypt(filedir, hashed_key, output_dir)
+            pass
+            # ciphertext = CipherFeedback.encrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'ofb':
-            OutputFeedback.encrypt(filedir, hashed_key, output_dir)
+            pass
+            # ciphertext = OutputFeedback.encrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'cm':
-            CounterMode.encrypt(filedir, hashed_key, output_dir)
+            pass
+            # ciphertext = CounterMode.encrypt(filedir, hashed_key, output_dir)
         
         output_folder = output_dir.split('/')[:-1]
         output_folder = '/'.join(output_folder)
-        create_folder(output_folder)
+        fl.create_folder(output_folder)
         fl.write_byte(ciphertext, output_dir)
 
 def decrypt(filedir, key, output_dir, op_mode):
@@ -135,17 +138,20 @@ def decrypt(filedir, key, output_dir, op_mode):
         if op_mode == 'ecb':
             ciphertext = ElectronicCodeBook.decrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'cbc':
-            CipherBlockChaining.decrypt(filedir, hashed_key, output_dir)
+            ciphertext = CipherBlockChaining.decrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'cfb':
-            CipherFeedback.decrypt(filedir, hashed_key, output_dir)
+            pass
+            # ciphertext = CipherFeedback.decrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'ofb':
-            OutputFeedback.decrypt(filedir, hashed_key, output_dir)
+            pass
+            # ciphertext =  OutputFeedback.decrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'cm':
-            CounterMode.decrypt(filedir, hashed_key, output_dir)
+            pass
+            # ciphertext =  CounterMode.decrypt(filedir, hashed_key, output_dir)
 
         output_folder = output_dir.split('/')[:-1]
         output_folder = '/'.join(output_folder)
-        create_folder(output_folder)
+        fl.create_folder(output_folder)
         fl.write_byte(ciphertext, output_dir)
 
 def print_user_input(filedir, key, hashed_key, output_filename, op_mode):
@@ -161,9 +167,3 @@ def check_form_complete(filedir, key, output_filename, op_mode):
     if not is_valid:
         print('Ada field yang kosong; Periksa lagi')
     return is_valid
-
-def create_folder(dir):
-    try:
-        os.makedirs(dir)
-    except FileExistsError:
-        pass
