@@ -24,6 +24,8 @@ class ElectronicCodeBook():
         plaintext = by.merge_bytes(plaintext_blocks)
         return plaintext
 
+
+
 class CipherBlockChaining():
     @staticmethod
     def encrypt(filedir, ext_key, output_filename):
@@ -46,24 +48,49 @@ class CipherBlockChaining():
         ciphertext_blocks = by.generate_slices(ciphertext, slice_length=16)
         block_chain = hs.md5(ext_key)
 
-        plaintext_block = []
+        plaintext_blocks = []
         for cb in ciphertext_blocks:
             pb_xor = Feistel.decrypt(cb, ext_key)
-            block_chain = cb
             pb = by.xor(pb_xor, block_chain)
-            plaintext_block.append(pb)
-        plaintext = by.merge_bytes(plaintext_block)
-        print(plaintext)
+            block_chain = cb
+            plaintext_blocks.append(pb)
+        plaintext = by.merge_bytes(plaintext_blocks)
         return plaintext
+
+
 
 class CipherFeedback():
     @staticmethod
-    def encrypt(filedir, ext_key, output_filename):
-        pass
+    def encrypt(filedir, ext_key, output_filename, byte_unit=1):
+        plaintext = fl.read_byte(filedir)
+        plaintext_blocks = by.generate_slices(plaintext, slice_length=16)
+        feedback = hs.md5(ext_key)
+
+        ciphertext_blocks = []
+        for pb in plaintext_blocks:
+            for i in range(0, len(pb), byte_unit):
+                xor_key = Feistel.encrypt(feedback, ext_key)
+                cb = by.xor(pb[i:i+byte_unit], xor_key[0:byte_unit])
+                ciphertext_blocks.append(cb)
+                feedback = feedback[byte_unit:] + cb
+        ciphertext = by.merge_bytes(ciphertext_blocks)
+        return ciphertext
     
     @staticmethod
-    def decrypt(filedir, ext_key, output_filename):
-        pass
+    def decrypt(filedir, ext_key, output_filename, byte_unit=1):
+        ciphertext = fl.read_byte(filedir)
+        ciphertext_blocks = by.generate_slices(ciphertext, slice_length=16)
+        feedback = hs.md5(ext_key)
+
+        plaintext_blocks = []
+        for cb in ciphertext_blocks:
+            for i in range(0, len(cb), byte_unit):
+                xor_key = Feistel.encrypt(feedback, ext_key)
+                pb = by.xor(cb[i:i+byte_unit], xor_key[0:byte_unit])
+                plaintext_blocks.append(pb)
+                feedback = feedback[byte_unit:] + cb
+        plaintext = by.merge_bytes(plaintext_blocks)
+        return plaintext
 
 
 
