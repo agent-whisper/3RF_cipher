@@ -115,7 +115,7 @@ def encrypt(filedir, key, output_dir, op_mode):
             ciphertext = CipherBlockChaining.encrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'cfb':
             pass
-            # ciphertext = CipherFeedback.encrypt(filedir, hashed_key, output_dir)
+            ciphertext = CipherFeedback.encrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'ofb':
             pass
             # ciphertext = OutputFeedback.encrypt(filedir, hashed_key, output_dir)
@@ -127,6 +127,7 @@ def encrypt(filedir, key, output_dir, op_mode):
         output_folder = '/'.join(output_folder)
         fl.create_folder(output_folder)
         fl.write_byte(ciphertext, output_dir)
+        print('=== Finished with filesize: {} ==='.format(len(ciphertext)))
 
 def decrypt(filedir, key, output_dir, op_mode):
     if check_form_complete(filedir, key, output_dir, op_mode):
@@ -134,14 +135,14 @@ def decrypt(filedir, key, output_dir, op_mode):
         hashed_key = hs.sha256(key)
         print_user_input(filedir, key, hashed_key, output_dir, op_mode)
 
-        ciphertext = bytes('', 'utf-8')
+        plaintext = bytes('', 'utf-8')
         if op_mode == 'ecb':
-            ciphertext = ElectronicCodeBook.decrypt(filedir, hashed_key, output_dir)
+            plaintext = ElectronicCodeBook.decrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'cbc':
-            ciphertext = CipherBlockChaining.decrypt(filedir, hashed_key, output_dir)
+            plaintext = CipherBlockChaining.decrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'cfb':
             pass
-            # ciphertext = CipherFeedback.decrypt(filedir, hashed_key, output_dir)
+            plaintext = CipherFeedback.decrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'ofb':
             pass
             # ciphertext =  OutputFeedback.decrypt(filedir, hashed_key, output_dir)
@@ -152,7 +153,8 @@ def decrypt(filedir, key, output_dir, op_mode):
         output_folder = output_dir.split('/')[:-1]
         output_folder = '/'.join(output_folder)
         fl.create_folder(output_folder)
-        fl.write_byte(ciphertext, output_dir)
+        fl.write_byte(plaintext, output_dir)
+        print('=== Finished with filesize: {} ==='.format(len(plaintext)))
 
 def print_user_input(filedir, key, hashed_key, output_filename, op_mode):
     print('File Directory: {}'.format(filedir))
