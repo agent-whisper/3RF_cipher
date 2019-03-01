@@ -12,7 +12,7 @@ def merge_bytes(byte_arr):
         result += b
     return result
 
-def xor(byte_arr_a, byte_arr_b):
+def xor_byte(byte_arr_a, byte_arr_b):
     xor_result = b''
     block_len = (len(byte_arr_a) if len(byte_arr_a) <= len(byte_arr_b) else len(byte_arr_b))
     for i in range(0, block_len):
@@ -20,15 +20,15 @@ def xor(byte_arr_a, byte_arr_b):
         xor_result += bytes(c, 'utf-8')
     return xor_result
 
-def increment(byte_string, enc):
-    string_form = byte_string.decode(enc)
-    idx = len(string_form) - 1
+def increment(byte_string):
+    temp = byte_string
+    idx = len(temp) - 1
     while (idx >= 0):
-        if (ord(string_form[idx]) < 255):
-            string_form = string_form[:idx] + chr(ord(string_form[idx])+1) + string_form[idx+1:]
-            return string_form.encode(enc)
+        if ((temp[idx]) < 255):
+            temp = temp[:idx] + bytes([temp[idx]+1]) + temp[idx+1:]
+            return temp
         else:
-            string_form = string_form[:idx] + chr(0) + string_form[idx+1:]
+            temp = temp[:idx] + bytes([0]) + temp[idx+1:]
             idx -=1
-    return string_form.encode(enc)
+    return temp
         
