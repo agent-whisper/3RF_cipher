@@ -2,7 +2,7 @@ import os
 import tkinter as tk
 import tkinter.filedialog as tkfd
 
-from src.blockcipher.modes import ElectronicCodeBook, CipherFeedback, \
+from src.blockcipher.operation.modes import ElectronicCodeBook, CipherFeedback, \
     CipherBlockChaining, OutputFeedback, CounterMode
 import src.utilities.hash as hs
 import src.utilities.file as fl
@@ -118,7 +118,7 @@ def encrypt(filedir, key, output_dir, op_mode):
             ciphertext = CipherFeedback.encrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'ofb':
             pass
-            # ciphertext = OutputFeedback.encrypt(filedir, hashed_key, output_dir)
+            ciphertext = OutputFeedback.encrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'cm':
             pass
             # ciphertext = CounterMode.encrypt(filedir, hashed_key, output_dir)
@@ -145,10 +145,10 @@ def decrypt(filedir, key, output_dir, op_mode):
             plaintext = CipherFeedback.decrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'ofb':
             pass
-            # ciphertext =  OutputFeedback.decrypt(filedir, hashed_key, output_dir)
+            plaintext =  OutputFeedback.decrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'cm':
             pass
-            # ciphertext =  CounterMode.decrypt(filedir, hashed_key, output_dir)
+            # plaintext =  CounterMode.decrypt(filedir, hashed_key, output_dir)
 
         output_folder = output_dir.split('/')[:-1]
         output_folder = '/'.join(output_folder)
