@@ -22,3 +22,22 @@ class TestBytesMethods(unittest.TestCase):
         result = b.merge_bytes(self.correct_slice_result)
         self.assertEqual(result, self.sample_data)
 
+    def test_add_by_one(self):
+        case_1 = bytes('{}{}{}'.format(chr(65), chr(255), chr(255)), 'utf-8')
+        case_2 = bytes('{}{}{}'.format(chr(255), chr(255), chr(255)), 'utf-8')
+        case_3 = bytes('{}{}{}'.format(chr(65), chr(66), chr(67)), 'utf-8')
+        case_4 = bytes('{}{}{}'.format(chr(255), chr(254), chr(255)), 'utf-8')
+
+        ans_1 = bytes('{}{}{}'.format(chr(66), chr(0), chr(0)), 'utf-8')
+        ans_2 = bytes('{}{}{}'.format(chr(0), chr(0), chr(0)), 'utf-8')
+        ans_3 = bytes('{}{}{}'.format(chr(65), chr(66), chr(68)), 'utf-8')
+        ans_4 = bytes('{}{}{}'.format(chr(255), chr(255), chr(0)), 'utf-8')
+
+        case_1 = b.increment(case_1, 'utf-8')
+        self.assertEqual(ans_1, case_1)
+        case_2 = b.increment(case_2, 'utf-8')
+        self.assertEqual(ans_2, case_2)
+        case_3 = b.increment(case_3, 'utf-8')
+        self.assertEqual(ans_3, case_3)
+        case_4 = b.increment(case_4, 'utf-8')
+        self.assertEqual(ans_4, case_4)
