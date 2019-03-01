@@ -121,7 +121,7 @@ def encrypt(filedir, key, output_dir, op_mode):
             ciphertext = OutputFeedback.encrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'cm':
             pass
-            # ciphertext = CounterMode.encrypt(filedir, hashed_key, output_dir)
+            ciphertext = CounterMode.encrypt(filedir, hashed_key, output_dir)
         
         output_folder = output_dir.split('/')[:-1]
         output_folder = '/'.join(output_folder)
@@ -148,7 +148,7 @@ def decrypt(filedir, key, output_dir, op_mode):
             plaintext =  OutputFeedback.decrypt(filedir, hashed_key, output_dir)
         elif op_mode == 'cm':
             pass
-            # plaintext =  CounterMode.decrypt(filedir, hashed_key, output_dir)
+            plaintext =  CounterMode.decrypt(filedir, hashed_key, output_dir)
 
         output_folder = output_dir.split('/')[:-1]
         output_folder = '/'.join(output_folder)
