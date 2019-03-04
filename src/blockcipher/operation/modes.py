@@ -5,10 +5,11 @@ class ElectronicCodeBook():
     @staticmethod
     def encrypt(filedir, ext_key, output_filename):
         plaintext = fl.read_byte(filedir)
-        plaintext_blocks = by.generate_slices(plaintext, slice_length=16)
+        plaintext_blocks = by.generate_slices(plaintext, slice_length=32)
 
         ciphertext_blocks = []
         for pb in plaintext_blocks:
+            
             ciphertext_blocks.append(Feistel.encrypt(pb, ext_key))
         ciphertext = by.merge_bytes(ciphertext_blocks)
         return ciphertext 
@@ -16,7 +17,7 @@ class ElectronicCodeBook():
     @staticmethod
     def decrypt(filedir, ext_key, output_filename):
         ciphertext = fl.read_byte(filedir)
-        ciphertext_blocks = by.generate_slices(ciphertext, slice_length=16)
+        ciphertext_blocks = by.generate_slices(ciphertext, slice_length=32)
 
         plaintext_blocks = []
         for cb in ciphertext_blocks:
@@ -30,8 +31,8 @@ class CipherBlockChaining():
     @staticmethod
     def encrypt(filedir, ext_key, output_filename):
         plaintext = fl.read_byte(filedir)
-        plaintext_blocks = by.generate_slices(plaintext, slice_length=16)
-        block_chain = hs.md5(ext_key)
+        plaintext_blocks = by.generate_slices(plaintext, slice_length=32)
+        block_chain = hs.sha256(ext_key)
         
         ciphertext_blocks = []
         for pb in plaintext_blocks:
@@ -45,8 +46,8 @@ class CipherBlockChaining():
     @staticmethod
     def decrypt(filedir, ext_key, output_filename):
         ciphertext = fl.read_byte(filedir)
-        ciphertext_blocks = by.generate_slices(ciphertext, slice_length=16)
-        block_chain = hs.md5(ext_key)
+        ciphertext_blocks = by.generate_slices(ciphertext, slice_length=32)
+        block_chain = hs.sha256(ext_key)
 
         plaintext_blocks = []
         for cb in ciphertext_blocks:
@@ -63,8 +64,8 @@ class CipherFeedback():
     @staticmethod
     def encrypt(filedir, ext_key, output_filename, byte_unit=1):
         plaintext = fl.read_byte(filedir)
-        plaintext_blocks = by.generate_slices(plaintext, slice_length=16)
-        feedback = hs.md5(ext_key)
+        plaintext_blocks = by.generate_slices(plaintext, slice_length=32)
+        feedback = hs.sha256(ext_key)
 
         ciphertext_blocks = []
         for pb in plaintext_blocks:
@@ -79,8 +80,8 @@ class CipherFeedback():
     @staticmethod
     def decrypt(filedir, ext_key, output_filename, byte_unit=1):
         ciphertext = fl.read_byte(filedir)
-        ciphertext_blocks = by.generate_slices(ciphertext, slice_length=16)
-        feedback = hs.md5(ext_key)
+        ciphertext_blocks = by.generate_slices(ciphertext, slice_length=32)
+        feedback = hs.sha256(ext_key)
 
         plaintext_blocks = []
         for cb in ciphertext_blocks:
@@ -98,8 +99,8 @@ class OutputFeedback():
     @staticmethod
     def encrypt(filedir, ext_key, output_filename, byte_unit=1):
         plaintext = fl.read_byte(filedir)
-        plaintext_blocks = by.generate_slices(plaintext, slice_length=16)
-        feedback = hs.md5(ext_key)
+        plaintext_blocks = by.generate_slices(plaintext, slice_length=32)
+        feedback = hs.sha256(ext_key)
 
         ciphertext_blocks = []
         for pb in plaintext_blocks:
@@ -114,8 +115,8 @@ class OutputFeedback():
     @staticmethod
     def decrypt(filedir, ext_key, output_filename, byte_unit=1):
         ciphertext = fl.read_byte(filedir)
-        ciphertext_blocks = by.generate_slices(ciphertext, slice_length=16)
-        feedback = hs.md5(ext_key)
+        ciphertext_blocks = by.generate_slices(ciphertext, slice_length=32)
+        feedback = hs.sha256(ext_key)
 
         plaintext_blocks = []
         for cb in ciphertext_blocks:
@@ -133,8 +134,8 @@ class CounterMode():
     @staticmethod
     def encrypt(filedir, ext_key, output_filename):
         plaintext = fl.read_byte(filedir)
-        plaintext_blocks = by.generate_slices(plaintext, slice_length=16)
-        counter_block = hs.md5(ext_key)
+        plaintext_blocks = by.generate_slices(plaintext, slice_length=32)
+        counter_block = hs.sha256(ext_key)
 
         ciphertext_blocks = []
         for pb in plaintext_blocks:
@@ -148,8 +149,8 @@ class CounterMode():
     @staticmethod
     def decrypt(filedir, ext_key, output_filename):
         ciphertext = fl.read_byte(filedir)
-        ciphertext_blocks = by.generate_slices(ciphertext, slice_length=16)
-        counter_block = hs.md5(ext_key)
+        ciphertext_blocks = by.generate_slices(ciphertext, slice_length=32)
+        counter_block = hs.sha256(ext_key)
 
         plaintext_blocks = []
         for cb in ciphertext_blocks:
