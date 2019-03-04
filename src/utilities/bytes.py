@@ -1,10 +1,15 @@
-def generate_slices(data, slice_length=8, pad_char='x'):
+def generate_slices(data, slice_length=8, check_next_exist=False):
     block_num = 0
     offset = 0
     while (offset < len(data)):
-        yield(data[offset : offset+slice_length])
+        sliced_data = data[offset : offset+slice_length]
         block_num += 1
         offset = block_num * slice_length
+        if (check_next_exist):
+            has_next = offset < len(data)
+            yield(sliced_data, has_next)
+        else:
+            yield(sliced_data)
 
 def merge_bytes(byte_arr):
     result = bytes('', 'utf-8')
