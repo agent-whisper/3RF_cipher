@@ -4,12 +4,12 @@ class PCKS5():
         required_pad_count = target_len - len(datablock)
         if required_pad_count > 0:
             padding = bytes([required_pad_count]) * required_pad_count
-            return [(datablock + padding), True]
+            return [(datablock + padding), b'', True]
         elif (required_pad_count == 0):
             padding = bytes([target_len]) * target_len
             return [datablock, padding, True]
         else:
-            return [datablock, False]
+            return [datablock, b'', False]
 
     @staticmethod
     def remove_padding(complete_data):

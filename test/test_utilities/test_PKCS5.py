@@ -11,9 +11,9 @@ class TestBytesMethods(unittest.TestCase):
         case_3_byte = b'1234567'
         case_3_tgt_len = 5
 
-        ans_1 = [(case_1_byte + bytes([5]) * 5), True]
+        ans_1 = [(case_1_byte + bytes([5]) * 5), b'', True]
         ans_2 = [case_2_byte, bytes([8]) * 8, True]
-        ans_3 = [case_3_byte, False]
+        ans_3 = [case_3_byte, b'', False]
 
         result_1 = PCKS5.insert_padding(case_1_byte, case_1_tgt_len)
         self.assertListEqual(ans_1, result_1)
