@@ -4,7 +4,9 @@ PBOX = [16, 7, 20, 21, 29, 12, 28, 17, 1, 15, 23, 26, 5, 8, 31, 10, 2, 8, 24, 14
 
 
 def permute(data):
+	# print("pbox :", len(data), data)
 	data = bits.bytes2bits(data)
+	# print(len(data))
 	new_data = ''
 	for bit_idx in range (0, len(data), 32) :
 		array_bit = data[bit_idx:bit_idx+32]

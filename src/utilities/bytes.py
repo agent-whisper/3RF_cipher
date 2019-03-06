@@ -17,13 +17,16 @@ def merge_bytes(byte_arr):
         result += b
     return result
 
-def xor_byte(byte_arr_a, byte_arr_b):
-    xor_result = b''
-    block_len = (len(byte_arr_a) if len(byte_arr_a) <= len(byte_arr_b) else len(byte_arr_b))
-    for i in range(0, block_len):
-        c = chr(byte_arr_a[i] ^ byte_arr_b[i])
-        xor_result += bytes(c, 'utf-8')
-    return xor_result
+# def xor_byte(byte_arr_a, byte_arr_b):
+#     xor_result = b''
+#     block_len = (len(byte_arr_a) if len(byte_arr_a) <= len(byte_arr_b) else len(byte_arr_b))
+#     for i in range(0, block_len):
+#         c = chr(byte_arr_a[i] ^ byte_arr_b[i])
+#         xor_result += bytes(c, 'utf-8')
+#     return xor_result
+
+def xor_byte(byte_arr_a, byte_arr_b) :
+    return(bytes([a ^ b for (a,b) in zip(byte_arr_a, byte_arr_b)]))
 
 def increment(byte_string):
     temp = byte_string
@@ -37,3 +40,8 @@ def increment(byte_string):
             idx -=1
     return temp
         
+def string2bytes(word) :
+    byte_list = []
+    for char in (word) :
+        byte_list.append(bytes([ord(char)]))
+    return(merge_bytes(byte_list))
