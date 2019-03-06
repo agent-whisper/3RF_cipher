@@ -1,6 +1,6 @@
 import unittest
 from src.blockcipher.modules import round_functions
-from src.utilities import bytes
+from src.utilities import bytes, hash
 
 class TestRF(unittest.TestCase):
 
@@ -73,10 +73,12 @@ class TestRF(unittest.TestCase):
 		for i in range (0,5) :
 			plain_block = round_functions.rf_combination(expected, key, i)
 			self.assertEqual(True, True)
-
+	
+	
 	def test_256_rf_inv_combination(self):	
-		block = b'TESTFREDTESTFREDTESTFREDTESTFREDFARIZTESFARIZTEZFARIZTESFARIZTEZ'
-		key = b'FARIZTESFARIZTEZFARIZTESFARIZTEZTESTFREDTESTFREDTESTFREDTESTFRED'
+		block = b'TESTMYNAMEISMOKHAMADFERDIGHOZALI'
+		key = b'FARIZTUMBUANTHISISOKE'
+		key = hash.sha256(key)
 		cipher_block = round_functions.rf_combination(block, key, 0)
 		plain_block = round_functions.rf_inv_combination(cipher_block, key, 0)
 		self.assertEqual(block, plain_block)
