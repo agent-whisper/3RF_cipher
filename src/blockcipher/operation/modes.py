@@ -20,7 +20,7 @@ class ElectronicCodeBook():
                 ciphertext_blocks.append(Feistel.encrypt(padding_block, ext_key))
             
         ciphertext = by.merge_bytes(ciphertext_blocks)
-        return ciphertext 
+        return ciphertext
 
     @staticmethod
     def decrypt(filedir, ext_key, output_filename):
@@ -31,7 +31,7 @@ class ElectronicCodeBook():
         for cb in ciphertext_blocks:
             plaintext_blocks.append(Feistel.decrypt(cb, ext_key))
         plaintext = by.merge_bytes(plaintext_blocks)
-        PCKS5.remove_padding(plaintext)
+        plaintext = PCKS5.remove_padding(plaintext)
         return plaintext
 
 
@@ -118,10 +118,10 @@ class CipherFeedback():
         plaintext_blocks = []
         for cb in ciphertext_blocks:
             for i in range(0, len(cb), byte_unit):
-                xor_key = Feistel.decrypt(feedback, ext_key)
+                xor_key = Feistel.encrypt(feedback, ext_key)
                 pb = by.xor_byte(cb[i:i+byte_unit], xor_key[0:byte_unit])
                 plaintext_blocks.append(pb)
-                feedback = feedback[byte_unit:] + cb
+                feedback = feedback[byte_unit:] + bytes([cb[i]])
         plaintext = by.merge_bytes(plaintext_blocks)
         plaintext = PCKS5.remove_padding(plaintext)
         return plaintext
