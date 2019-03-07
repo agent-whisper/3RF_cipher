@@ -84,44 +84,41 @@ class CipherFeedback():
     @staticmethod
     def encrypt(filedir, ext_key, output_filename, byte_unit=1):
         plaintext = fl.read_byte(filedir)
-        plaintext_blocks = by.generate_slices(plaintext, slice_length=32, check_next_exist=True)
+        plaintext_blocks = by.generate_slices(plaintext, slice_length=byte_unit, check_next_exist=True)
         feedback = hs.sha256(ext_key)
 
         ciphertext_blocks = []
         for pb, has_next in plaintext_blocks:
             padding_block = b''
-            if not has_next:
-                padding_result = PCKS5.insert_padding(pb, 32)
+            if not has_next and byte_unit > 1:
+                padding_result = PCKS5.insert_padding(pb, byte_unit)
                 pb = padding_result[0]
                 padding_block = padding_result[1]
-            for i in range(0, len(pb), byte_unit):
-                xor_key = Feistel.encrypt(feedback, ext_key)
-                cb = by.xor_byte(pb[i:i+byte_unit], xor_key[0:byte_unit])
-                ciphertext_blocks.append(cb)
-                feedback = feedback[byte_unit:] + cb
+            xor_key = Feistel.encrypt(feedback, ext_key)
+            cb = by.xor_byte(pb, xor_key[0:byte_unit])
+            ciphertext_blocks.append(cb)
+            feedback = feedback[byte_unit:] + cb
 
             if padding_block != b'':
-                for i in range(0, len(padding_block), byte_unit):
-                    xor_key = Feistel.encrypt(feedback, ext_key)
-                    cb = by.xor_byte(padding_block[i:i+byte_unit], xor_key[0:byte_unit])
-                    ciphertext_blocks.append(cb)
-                    feedback = feedback[byte_unit:] + cb
+                xor_key = Feistel.encrypt(feedback, ext_key)
+                cb = by.xor_byte(padding_block, xor_key[0:byte_unit])
+                ciphertext_blocks.append(cb)
+                feedback = feedback[byte_unit:] + cb
         ciphertext = by.merge_bytes(ciphertext_blocks)
         return ciphertext
     
     @staticmethod
     def decrypt(filedir, ext_key, output_filename, byte_unit=1):
         ciphertext = fl.read_byte(filedir)
-        ciphertext_blocks = by.generate_slices(ciphertext, slice_length=32)
+        ciphertext_blocks = by.generate_slices(ciphertext, slice_length=byte_unit)
         feedback = hs.sha256(ext_key)
 
         plaintext_blocks = []
         for cb in ciphertext_blocks:
-            for i in range(0, len(cb), byte_unit):
-                xor_key = Feistel.encrypt(feedback, ext_key)
-                pb = by.xor_byte(cb[i:i+byte_unit], xor_key[0:byte_unit])
-                plaintext_blocks.append(pb)
-                feedback = feedback[byte_unit:] + cb[i:i+byte_unit]
+            xor_key = Feistel.encrypt(feedback, ext_key)
+            pb = by.xor_byte(cb, xor_key[0:byte_unit])
+            plaintext_blocks.append(pb)
+            feedback = feedback[byte_unit:] + cb
         plaintext = by.merge_bytes(plaintext_blocks)
         plaintext = PCKS5.remove_padding(plaintext)
         return plaintext
