@@ -121,7 +121,7 @@ class CipherFeedback():
                 xor_key = Feistel.encrypt(feedback, ext_key)
                 pb = by.xor_byte(cb[i:i+byte_unit], xor_key[0:byte_unit])
                 plaintext_blocks.append(pb)
-                feedback = feedback[byte_unit:] + bytes([cb[i]])
+                feedback = feedback[byte_unit:] + cb[i:i+byte_unit]
         plaintext = by.merge_bytes(plaintext_blocks)
         plaintext = PCKS5.remove_padding(plaintext)
         return plaintext
@@ -168,7 +168,7 @@ class OutputFeedback():
         plaintext_blocks = []
         for cb in ciphertext_blocks:
             for i in range(0, len(cb), byte_unit):
-                xor_key = Feistel.decrypt(feedback, ext_key)
+                xor_key = Feistel.encrypt(feedback, ext_key)
                 pb = by.xor_byte(cb[i:i+byte_unit], xor_key[0:byte_unit])
                 plaintext_blocks.append(pb)
                 feedback = feedback[byte_unit:] + xor_key[0:byte_unit]
@@ -214,9 +214,9 @@ class CounterMode():
 
         plaintext_blocks = []
         for cb in ciphertext_blocks:
-            xor_key = Feistel.decrypt(counter_block, ext_key)
+            xor_key = Feistel.encrypt(counter_block, ext_key)
             pb = by.xor_byte(xor_key, cb)
-            plaintext_blocks.append(Feistel.encrypt(pb, ext_key))
+            plaintext_blocks.append(pb)
             counter_block = by.increment(counter_block)
         plaintext = by.merge_bytes(plaintext_blocks)
         plaintext = PCKS5.remove_padding(plaintext)
